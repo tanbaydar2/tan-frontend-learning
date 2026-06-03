@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sensor Settings</title>
+  </head>
+  <body>
+    <form action="" method="get">
+        <h3>Sensor Settings</h3>
+
+        <label for="duration">Duration (seconds)</label>
+        <input type="number" id="duration" />
+
+        <label for="gravity-compensation">Gravity Compensation</label>
+        <input type="checkbox" id="gravity-compensation" />
+
+        <label for="accel-range">Accelerometer range (±g)</label>
+        <select name="accel-range" id="accel-range">
+            <option value="">Please choose a range</option>
+            <option value="2">±2g</option>
+            <option value="4">±4g</option>
+            <option value="8">±8g</option>
+            <option value="16">±16g</option>
+        </select>
+
+        <label for="odr">Sample rate (ODR):</label>
+        <select name="odr" id="odr">
+            <option value="">Please choose a sample rate</option>
+            <option value="12.5">12.5 Hz</option>
+            <option value="26">26 Hz</option>
+            <option value="52">52 Hz</option>
+            <option value="104">104 Hz</option>
+            <option value="208">208 Hz</option>
+            <option value="416">416 Hz</option>
+            <option value="833">833 Hz</option>
+            <option value="1666">1666 Hz</option>
+            <option value="3333">3333 Hz</option>
+            <option value="6666">6666 Hz</option>
+        </select>
+
+        <button type="button">Start</button>
+        <button type="button">Stop</button>
+    </form>
+  </body>
+</html>
