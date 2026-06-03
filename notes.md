@@ -17,4 +17,6 @@ on top of another instead of placed beside each other. I interpreted these as th
 - File Manager
 - Controls
 Every design decision - except general guidelines - are made inside these branches, which helps organization.
+
+4. When I opened the page directly from my laptop instead of from the sensor, the Console tab in DevTools filled up with red errors. The concept of this page being the client side then sticked with me. It is built to ask the sensor's chip (the server) for everything it shows. I noticed that the labels "Device Name:" and "Firmware:" are written into the HTML, but the value right next to each one is just an empty <span> with an id or data attribute and nothing inside it - <span data-hostname></span> and <span id='firmware-version'></span>. I figured out that the page does not know those values on its own, so it has to ask the chip and fill them in once the chip responds.
   
