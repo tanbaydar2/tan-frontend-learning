@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Status Bar</title>
+
+        <style>
+            :root {
+            --btn-primary: #CED4DA;
+            --btn-primary-hover: #ADB5BD; 
+            --btn-gold: #F6EBCD;
+            --btn-red: #D15252;
+            --bg: #F8F9FA;
+            --text: #212529;
+            --btn-text: #212529; 
+            }
+
+            body {
+                background: var(--bg);
+                font-family: system-ui, sans-serif;
+                min-height: 100vh;
+                margin: 0;
+            }
+
+            .logo {
+                height: 40px;
+                width: auto;
+            }
+
+            .status-bar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .status-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .status-right {
+                display: flex;
+                align-items: center;
+                gap: 16px;
+            }
+
+            .reading {
+                margin: 0;
+            }
+
+            .button-row {
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+                max-width: 420px;      
+                margin: 16px auto 0;    
+                padding: 0 16px;        
+            }
+
+            .action-btn {
+                flex: 1;
+                min-width: 140px;
+                
+            }
+
+        </style>
+    </head>
+
+
+    <body>
+
+    <header class="status-bar">
+
+        <div class="status-left">
+        <img class="logo" src="images/logo.png" alt="logo_placeholder" />
+        <span class="device-name">EVB-01</span>
+        </div>
+
+        <div class="status-right">
+        <p class="reading">
+            <span class="label">Battery</span>
+            <span class="value">battery_pct_1</span>
+        </p>
+
+        <p class="reading">
+            <span class="label">Temp</span>
+            <span class="value">temp_value_1</span>
+        </p>
+        </div>
+
+        </header>
+
+        <div class="button-row">
+        <button type="button" class="action-btn">action_1</button>
+        <button type="button" class="action-btn">action_2</button>
+        <button type="button" class="action-btn">action_3</button>
+        </div>
+
+    </body>
+
+
+    </html>
