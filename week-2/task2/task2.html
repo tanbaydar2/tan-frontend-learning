@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EVB-01 Dashboard Grid</title>
+
+    <style>
+      /* Universal: include padding/border in element width */
+      * {
+        box-sizing: border-box;
+      }
+
+      /* Palette: define once, reuse everywhere */
+      :root {
+        --bg: #F8F9FA;
+        --text: #212529;
+        --card-bg: #FFFFFF;
+        --border: #d0d4d9;
+      }
+
+      body {
+        margin: 0;
+        padding: 20px;
+        background: var(--bg);
+        color: var(--text);
+        font-family: system-ui, sans-serif;
+      }
+
+      /* THE GRID CONTAINER — this is the whole point of the task.
+         repeat(auto-fit, minmax(280px, 1fr)) makes as many columns as fit,
+         each at least 280px wide, sharing leftover space equally.
+         Reflows 1 -> 2 -> 3+ columns with zero media queries. */
+      .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 16px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      /* CARD — appearance only. No layout/position rules.
+         The grid decides where each card goes, not the card itself. */
+      .card {
+        background: var(--card-bg);
+        padding: 24px;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+
+      .card h2 {
+        margin-top: 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="dashboard">
+      <div class="card">
+        <h2>Status</h2>
+        <p>Placeholder text.</p>
+      </div>
+
+      <div class="card">
+        <h2>Sensor Config</h2>
+        <p>Placeholder text.</p>
+      </div>
+
+      <div class="card">
+        <h2>Data Collection</h2>
+        <p>Placeholder text.</p>
+      </div>
+
+      <div class="card">
+        <h2>Live Chart</h2>
+        <p>Placeholder text.</p>
+      </div>
+    </div>
+  </body>
+</html>
