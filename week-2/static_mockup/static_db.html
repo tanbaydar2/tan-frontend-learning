@@ -20,6 +20,15 @@
         :root {
             --font-size: 16px;   /* all text  */
             --icon-size: 24px;   /* all icons */
+
+            /* grayscale palette for the dashboard cards (real color comes later) */
+            --radius:     12px;      /* one corner radius for every card + control */
+            --card-bg:    #ffffff;   /* card surface              */
+            --border:     #d0d4d9;   /* hairline card border      */
+            --fill:       #e9ecef;   /* selected chip / bar track */
+            --chart-fill: #ced4da;   /* chart placeholder block   */
+            --muted:      #6c757d;   /* de-emphasized text        */
+            --hero:       #212529;   /* darkest ink — shutter      */
         }
 
         body {
@@ -103,6 +112,213 @@
             background: currentColor;
             border-radius: 1px;
         }
+
+        /* =========================================================
+           DASHBOARD GRID  ->  three cells below the status bar:
+           Sensor card | Capture Console | Status card. auto-fit so
+           columns grow 1 -> 2 -> 3 as the viewport widens, no media
+           queries. Gaps/padding are deliberately generous (Refactoring
+           UI: "start with too much white space", tighten later).
+           ========================================================= */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+            padding: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* shared frame for the three grid cells (Sensor, Console, Status) */
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+        }
+
+        /* the one drawn heading; the rest are visually-hidden */
+        .card__title {
+            margin: 0 0 16px;
+        }
+
+        /* hide visually, keep for screen readers (names the cards that
+           don't draw a heading: Live data / Stream-Record / Status) */
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            margin: -1px;
+            padding: 0;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ---- Capture Console: wrapper that groups two independent
+           components (chart over control) into one unit. The frame is
+           the .card above; the tight 16px gap (vs the 32px grid gap)
+           is what makes them read as grouped. span 2 -> the dominant
+           cell once the grid has room for it. */
+        .console {
+            grid-column: span 2;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        /* the two grouped components stay flat — the wrapper carries the
+           frame, and .capture lays out its own contents further down. */
+
+        /* ---- Sensor configurations ---- */
+        /* accel/gyro/temp toggles drawn as chips; selected = filled grey */
+        .channels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .channel {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card-bg);
+            font: inherit;
+            cursor: pointer;
+        }
+        .channel.is-selected {
+            background: var(--fill);
+            border-color: #adb5bd;
+            font-weight: 600;
+        }
+        /* one control per row, label stacked above its field */
+        .settings {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .field--inline {            /* gravity comp: checkbox beside its label */
+            flex-direction: row;
+            align-items: center;
+            color: var(--muted);
+        }
+        .field label {
+            color: var(--muted);
+        }
+        .field select,
+        .field input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font: inherit;
+            background: var(--card-bg);
+        }
+
+        /* ---- Live Data: chart placeholder (empty/ready state) ---- */
+        .chart {
+            min-height: 320px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--chart-fill);
+            border-radius: var(--radius);
+        }
+        .chart__empty {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        /* ---- Stream / Record: the hero. The shutter is the DARKEST
+           thing on the page, so it wins the squint test by contrast. ---- */
+        .capture {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+        .shutter {
+            width: 96px;
+            height: 96px;
+            border: 0;
+            border-radius: var(--radius);
+            background: var(--hero);
+            cursor: pointer;
+        }
+        .modes {
+            display: flex;
+            gap: 8px;
+        }
+        .mode {
+            padding: 8px 16px;
+            border: 0;
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--muted);
+            font: inherit;
+            cursor: pointer;
+        }
+        .mode.is-selected {         /* Record is the chosen mode */
+            color: #212529;
+            font-weight: 600;
+        }
+
+        /* ---- Status: the quietest card. Lighter frame + muted text,
+           no bold, so it never competes for attention. ---- */
+        .status {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            border-color: #e9ecef;
+        }
+        .readout {
+            flex: 1;
+            margin: 0;
+            display: grid;
+            grid-template-columns: auto 1fr;   /* term | value */
+            gap: 12px 16px;
+            align-items: center;
+        }
+        .readout dt {
+            color: var(--muted);
+        }
+        .readout dd {
+            margin: 0;
+            text-align: right;
+            color: var(--muted);
+        }
+        /* battery drawn as a simple bar (same idea as the status-bar
+           glyph): a track with a fill at a fixed % */
+        .bar {
+            display: inline-block;
+            width: 96px;
+            height: 8px;
+            background: var(--fill);
+            border-radius: var(--radius);
+            overflow: hidden;
+            vertical-align: middle;
+        }
+        .bar__fill {
+            display: block;
+            height: 100%;
+            width: 78%;
+            background: var(--muted);
+        }
+        .refresh {
+            flex: none;
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--card-bg);
+            color: var(--muted);
+            cursor: pointer;
+        }
     </style>
 
 </head>
@@ -126,5 +342,80 @@
         </div>
     </header>
 
+    <main class="dashboard">
+
+        <!-- 1. SENSOR CONFIGURATIONS — single track, sits beside the chart -->
+        <section class="card sensor-config" aria-labelledby="config-heading">
+            <h2 id="config-heading" class="card__title">sensor configurations</h2>
+
+            <div class="channels">
+                <button type="button" class="channel">Accel</button>
+                <button type="button" class="channel is-selected">Gyro</button>
+                <button type="button" class="channel is-selected">Temp</button>
+            </div>
+
+            <div class="settings">
+                <div class="field">
+                    <label for="odr">Sample rate (Hz)</label>
+                    <select id="odr">
+                        <option>12.5</option><option>26</option><option>52</option>
+                        <option selected>104</option><option>208</option><option>416</option>
+                        <option>833</option><option>1666</option><option>3333</option><option>6666</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="accel-range">Accel range (g)</label>
+                    <select id="accel-range"><option>2</option><option>4</option><option>8</option><option>16</option></select>
+                </div>
+                <div class="field">
+                    <label for="gyro-range">Gyro range (dps)</label>
+                    <select id="gyro-range"><option>125</option><option>250</option><option>500</option><option>1000</option><option>2000</option><option>4000</option></select>
+                </div>
+                <div class="field">
+                    <label for="duration">Duration (s)</label>
+                    <input type="number" id="duration" min="0" step="any" value="10">
+                </div>
+                <label class="field field--inline">
+                    <input type="checkbox" id="gravity-comp"> Gravity compensation
+                </label>
+            </div>
+        </section>
+
+        <!-- 2. CAPTURE CONSOLE — layout-only wrapper carrying the unifying
+             frame. Holds two INDEPENDENT components; each liftable out alone. -->
+        <div class="card console">
+
+            <!-- component A: Live Data (chart placeholder), self-contained -->
+            <section class="live-data" aria-labelledby="live-heading">
+                <h2 id="live-heading" class="visually-hidden">Live data</h2>
+                <div class="chart"><p class="chart__empty">chart goes here</p></div>
+            </section>
+
+            <!-- component B: Stream / Record (the hero control), self-contained -->
+            <section class="capture" aria-labelledby="capture-heading">
+                <h2 id="capture-heading" class="visually-hidden">Stream / Record</h2>
+                <button type="button" class="shutter" aria-label="Start recording"></button>
+                <div class="modes">
+                    <button type="button" class="mode">Stream</button>
+                    <button type="button" class="mode is-selected">Record</button>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- 3. STATUS — single track, the quietest thing on the page -->
+        <section class="card status" aria-labelledby="status-heading">
+            <h2 id="status-heading" class="visually-hidden">Device status</h2>
+            <dl class="readout">
+                <dt>Device</dt>      <dd>EVB-01-A3F2</dd>
+                <dt>Firmware</dt>    <dd>v1.4.2</dd>
+                <dt>Battery</dt>     <dd><span class="bar"><span class="bar__fill"></span></span> 78%</dd>
+                <dt>Voltage</dt>     <dd>3.96 V</dd>
+                <dt>Temperature</dt> <dd>68&deg;F</dd>
+            </dl>
+            <button type="button" class="refresh" aria-label="Refresh device status">&#8635;</button>
+        </section>
+
+    </main>
 
 </body>
