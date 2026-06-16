@@ -75,11 +75,6 @@
             font-size: var(--font-size);
         }
 
-        /* battery: a rounded shell with a terminal nub on the right,
-           filled by the inner span. Width tracks --icon-size; it's a wide
-           icon, so the height is a fraction of that. currentColor keeps it
-           the text colour for now (we'll add real colour when we accentuate). */
-
         /*  CLAUDE CODE HANDLED THE BATTERY SECTION, since it is a mockup and a visual, i let it do it,
             will change it later when I can touch backend.*/
         .battery {
@@ -115,7 +110,7 @@
 
         /* =========================================================
            DASHBOARD GRID  ->  three cells below the status bar:
-           Sensor card | Capture Console | Status card. auto-fit so
+           chart-group | Stream/Record | Status. auto-fit so
            columns grow 1 -> 2 -> 3 as the viewport widens, no media
            queries. Gaps/padding are deliberately generous (Refactoring
            UI: "start with too much white space", tighten later).
@@ -129,7 +124,7 @@
             margin: 0 auto;
         }
 
-        /* shared frame for the three grid cells (Sensor, Console, Status) */
+        /* shared frame for grid cells */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -142,8 +137,7 @@
             margin: 0 0 16px;
         }
 
-        /* hide visually, keep for screen readers (names the cards that
-           don't draw a heading: Live data / Stream-Record / Status) */
+        /* hide visually, keep for screen readers */
         .visually-hidden {
             position: absolute;
             width: 1px;
@@ -156,56 +150,40 @@
             border: 0;
         }
 
-        /* ---- Capture Console: wrapper that groups two independent
-           components (chart over control) into one unit. The frame is
-           the .card above; the tight 16px gap (vs the 32px grid gap)
-           is what makes them read as grouped. span 2 -> the dominant
-           cell once the grid has room for it. */
-        .console {
-            grid-column: span 2;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-        /* the two grouped components stay flat — the wrapper carries the
-           frame, and .capture lays out its own contents further down. */
-
-        /* ---- Sensor configurations ---- */
-        /* accel/gyro/temp toggles drawn as chips; selected = filled grey */
+        /* ---- Sensor config: channel pills ---- */
         .channels {
             display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 8px;
         }
         .channel {
-            padding: 8px 16px;
+            padding: 4px 12px;
             border: 1px solid var(--border);
-            border-radius: var(--radius);
+            border-radius: 999px;
             background: var(--card-bg);
             font: inherit;
+            font-size: 13px;
             cursor: pointer;
+            transition: background 0.15s ease;
         }
         .channel.is-selected {
-            background: var(--fill);
-            border-color: #adb5bd;
-            font-weight: 600;
+            background: #1a1a1a;
+            color: #ffffff;
+            border-color: #1a1a1a;
         }
-        /* one control per row, label stacked above its field */
+
+        /* advanced settings fields — hidden until JS reveals them */
         .settings {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+            display: none;
         }
         .field {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
-        .field--inline {            /* gravity comp: checkbox beside its label */
+        .field--inline {
             flex-direction: row;
             align-items: center;
-            color: var(--muted);
+            justify-content: space-between;
         }
         .field label {
             color: var(--muted);
@@ -227,7 +205,7 @@
             align-items: center;
             justify-content: center;
             background: var(--chart-fill);
-            border-radius: var(--radius);
+            border-radius: 0 0 var(--radius) var(--radius);
         }
         .chart__empty {
             margin: 0;
@@ -249,23 +227,29 @@
             border-radius: var(--radius);
             background: var(--hero);
             cursor: pointer;
+            transition: background 0.15s ease;
         }
-        .modes {
-            display: flex;
-            gap: 8px;
+        .segmented {
+            display: inline-flex;
+            background: #e0e0e0;
+            border-radius: 999px;
+            padding: 3px;
         }
-        .mode {
-            padding: 8px 16px;
-            border: 0;
-            border-radius: var(--radius);
+        .segment {
+            padding: 6px 18px;
+            border: none;
+            border-radius: 999px;
+            font-size: 13px;
             background: transparent;
             color: var(--muted);
             font: inherit;
             cursor: pointer;
+            transition: background 0.15s ease;
         }
-        .mode.is-selected {         /* Record is the chosen mode */
+        .segment.is-selected {
+            background: #ffffff;
             color: #212529;
-            font-weight: 600;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.15);
         }
 
         /* ---- Status: the quietest card. Lighter frame + muted text,
@@ -292,8 +276,6 @@
             text-align: right;
             color: var(--muted);
         }
-        /* battery drawn as a simple bar (same idea as the status-bar
-           glyph): a track with a fill at a fixed % */
         .bar {
             display: inline-block;
             width: 96px;
@@ -318,7 +300,84 @@
             background: var(--card-bg);
             color: var(--muted);
             cursor: pointer;
+            transition: background 0.15s ease;
         }
+
+        /* ---- Chart group: sensor strip flush above chart ---- */
+        .chart-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        /* ---- Sensor config: slim horizontal strip ----
+           Overrides .card padding + border-radius; keeps .card bg + border */
+        .sensor-config {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+        .strip-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .strip-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        .advanced-label {
+            font-size: 13px;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+        .advanced-btn {
+            padding: 4px 8px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            background: var(--card-bg);
+            font: inherit;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+
+        /* ---- Gravity compensation control ---- */
+        .gravity-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .gravity-status {
+            color: var(--muted);
+        }
+
+        /* ---- Hover / active states for all buttons ---- */
+        /* Light / outlined buttons: hover darker, active darker still */
+        .channel:hover { background: #f0f0f0; }
+        .channel:active { background: #e0e0e0; }
+
+        .advanced-btn:hover { background: #f0f0f0; }
+        .advanced-btn:active { background: #e0e0e0; }
+
+        .refresh:hover { background: #f0f0f0; }
+        .refresh:active { background: #e0e0e0; }
+
+        .segment:hover { background: #f0f0f0; }
+        .segment:active { background: #e0e0e0; }
+
+        /* Dark buttons: hover lighter, press dips with scale */
+        .shutter:hover { background: #2e2e2e; }
+        .shutter:active { transform: scale(0.97); }
+
+        .channel.is-selected:hover { background: #2e2e2e; }
+        .channel.is-selected:active { transform: scale(0.97); }
+
     </style>
 
 </head>
@@ -331,77 +390,80 @@
             <!-- the device name is what this page is "about" -> it's the h1 -->
             <h1 class="device-name" data-hostname>EVB-01-A3F2</h1>
         </div>
-        
 
         <div class="vitals">
-        <!-- battery is a CSS-drawn icon -->
-        <div class="battery" role="img" aria-label="Battery">
-            <span class="battery__fill"></span>
-        </div>
-        <span class="reading" data-temp>68&deg;F</span>
+            <!-- battery is a CSS-drawn icon -->
+            <div class="battery" role="img" aria-label="Battery">
+                <span class="battery__fill"></span>
+            </div>
+            <span class="reading" data-temp>68&deg;F</span>
         </div>
     </header>
 
     <main class="dashboard">
 
-        <!-- 1. SENSOR CONFIGURATIONS — single track, sits beside the chart -->
-        <section class="card sensor-config" aria-labelledby="config-heading">
-            <h2 id="config-heading" class="card__title">sensor configurations</h2>
+        <!-- 1. CHART GROUP — sensor strip flush above chart, one grid cell -->
+        <div class="chart-group">
 
-            <div class="channels">
-                <button type="button" class="channel">Accel</button>
-                <button type="button" class="channel is-selected">Gyro</button>
-                <button type="button" class="channel is-selected">Temp</button>
-            </div>
+            <section class="card sensor-config">
+                <div class="strip-left">
+                    <div class="channels">
+                        <button type="button" class="channel">Accel</button>
+                        <button type="button" class="channel is-selected">Gyro</button>
+                        <button type="button" class="channel is-selected">Temp</button>
+                    </div>
+                </div>
+                <div class="strip-right">
+                    <span class="advanced-label">Advanced Settings</span>
+                    <button type="button" class="advanced-btn">v</button>
+                </div>
+                <div class="settings">
+                    <div class="field">
+                        <label for="odr">Sample rate (Hz)</label>
+                        <select id="odr">
+                            <option>12.5</option><option>26</option><option>52</option>
+                            <option selected>104</option><option>208</option><option>416</option>
+                            <option>833</option><option>1666</option><option>3333</option><option>6666</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="accel-range">Accel range (g)</label>
+                        <select id="accel-range"><option>2</option><option>4</option><option>8</option><option>16</option></select>
+                    </div>
+                    <div class="field">
+                        <label for="gyro-range">Gyro range (dps)</label>
+                        <select id="gyro-range"><option>125</option><option>250</option><option>500</option><option>1000</option><option>2000</option><option>4000</option></select>
+                    </div>
+                    <div class="field">
+                        <label for="duration">Duration (s)</label>
+                        <input type="number" id="duration" min="0" step="any" value="10">
+                    </div>
+                    <label class="field field--inline">
+                        <span>Gravity compensation</span>
+                        <span class="gravity-control">
+                            <input type="checkbox" id="gravity-comp">
+                            <span class="gravity-status">Off</span>
+                        </span>
+                    </label>
+                </div>
+            </section>
 
-            <div class="settings">
-                <div class="field">
-                    <label for="odr">Sample rate (Hz)</label>
-                    <select id="odr">
-                        <option>12.5</option><option>26</option><option>52</option>
-                        <option selected>104</option><option>208</option><option>416</option>
-                        <option>833</option><option>1666</option><option>3333</option><option>6666</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label for="accel-range">Accel range (g)</label>
-                    <select id="accel-range"><option>2</option><option>4</option><option>8</option><option>16</option></select>
-                </div>
-                <div class="field">
-                    <label for="gyro-range">Gyro range (dps)</label>
-                    <select id="gyro-range"><option>125</option><option>250</option><option>500</option><option>1000</option><option>2000</option><option>4000</option></select>
-                </div>
-                <div class="field">
-                    <label for="duration">Duration (s)</label>
-                    <input type="number" id="duration" min="0" step="any" value="10">
-                </div>
-                <label class="field field--inline">
-                    <input type="checkbox" id="gravity-comp"> Gravity compensation
-                </label>
-            </div>
-        </section>
-
-        <!-- 2. CAPTURE CONSOLE — layout-only wrapper carrying the unifying
-             frame. Holds two INDEPENDENT components; each liftable out alone. -->
-        <div class="card console">
-
-            <!-- component A: Live Data (chart placeholder), self-contained -->
             <section class="live-data" aria-labelledby="live-heading">
                 <h2 id="live-heading" class="visually-hidden">Live data</h2>
                 <div class="chart"><p class="chart__empty">chart goes here</p></div>
             </section>
 
-            <!-- component B: Stream / Record (the hero control), self-contained -->
-            <section class="capture" aria-labelledby="capture-heading">
-                <h2 id="capture-heading" class="visually-hidden">Stream / Record</h2>
-                <button type="button" class="shutter" aria-label="Start recording"></button>
-                <div class="modes">
-                    <button type="button" class="mode">Stream</button>
-                    <button type="button" class="mode is-selected">Record</button>
-                </div>
-            </section>
-
         </div>
+
+        <!-- 2. STREAM / RECORD — standalone hero card, direct grid child -->
+        <section class="card capture" aria-labelledby="capture-heading">
+            <h2 id="capture-heading" class="visually-hidden">Stream / Record</h2>
+            <button type="button" class="shutter" aria-label="Start recording"></button>
+            <div class="segmented">
+                <button type="button" class="segment">Stream</button>
+                <button type="button" class="segment is-selected">Record</button>
+            </div>
+        </section>
 
         <!-- 3. STATUS — single track, the quietest thing on the page -->
         <section class="card status" aria-labelledby="status-heading">
@@ -419,3 +481,4 @@
     </main>
 
 </body>
+</html>
