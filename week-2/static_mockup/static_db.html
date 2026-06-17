@@ -18,23 +18,38 @@
 
         /* one baseline for the whole page; accentuate specific bits later */
         :root {
-            --font-size: 16px;   /* all text  */
+            --font-size: 18px;   /* all text (midpoint: base 18) */
             --icon-size: 24px;   /* all icons */
 
             /* grayscale palette for the dashboard cards (real color comes later) */
             --radius:     12px;      /* one corner radius for every card + control */
+            --bg:         #f8f9fa;   /* faint page tint (cards lift off it) */
             --card-bg:    #ffffff;   /* card surface              */
             --border:     #d0d4d9;   /* hairline card border      */
             --fill:       #e9ecef;   /* selected chip / bar track */
             --chart-fill: #ced4da;   /* chart placeholder block   */
             --muted:      #6c757d;   /* de-emphasized text        */
             --hero:       #212529;   /* darkest ink — shutter      */
+
+            /* first color pass — pills + capture button */
+            --btn-primary:      #26b6b5;   /* selected pill fill (teal) */
+            --text-dark:        #172b36;   /* unselected pill text       */
+            --btn-cyan:         #BCF1F1;   /* unselected pill fill       */
+            --btn-cyan-hover:   #AEEAEA;   /* unselected pill hover/active */
+            --placeholder-navy: #003d5b;   /* capture button (placeholder) */
+
+            /* depth + type pass — surfaces and secondary text */
+            --surface-page:    #e6eaef;   /* page bg — cards lift off it */
+            --surface-card:    #ffffff;   /* card surface               */
+            --border-divider:  #e2e8f0;   /* hairlines if needed         */
+            --text-muted:      #6b7280;   /* labels / secondary text     */
         }
 
         body {
             margin: 0;
             font-family: system-ui, sans-serif;
             font-size: var(--font-size);
+            background: var(--surface-page);
         }
 
         /* status bar: identity pushed LEFT, vitals pushed RIGHT,
@@ -124,10 +139,15 @@
             margin: 0 auto;
         }
 
-        /* shared frame for grid cells */
+        /* grid cell: section label (on the page) above its card */
+        .cell {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* shared frame for grid cells — separated by background, not a border */
         .card {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
+            background: var(--surface-card);
             border-radius: var(--radius);
             padding: 32px;
         }
@@ -135,6 +155,27 @@
         /* the one drawn heading; the rest are visually-hidden */
         .card__title {
             margin: 0 0 16px;
+        }
+
+        /* small muted section label — visual anchor, not a loud title */
+        .section-label {
+            margin: 0 0 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* STATUS header line: label left, refresh action right-aligned */
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .status-header .section-label {
+            margin: 0;
         }
 
         /* hide visually, keep for screen readers */
@@ -156,25 +197,22 @@
             gap: 8px;
         }
         .channel {
-            padding: 4px 12px;
+            padding: 8px 14px;
             border: 1px solid var(--border);
             border-radius: 999px;
-            background: var(--card-bg);
+            background: var(--btn-cyan);
+            color: var(--text-dark);
             font: inherit;
-            font-size: 13px;
+            font-size: 16px;
             cursor: pointer;
             transition: background 0.15s ease;
         }
         .channel.is-selected {
-            background: #1a1a1a;
+            background: var(--btn-primary);
             color: #ffffff;
-            border-color: #1a1a1a;
+            border-color: var(--btn-primary);
         }
 
-        /* advanced settings fields — hidden until JS reveals them */
-        .settings {
-            display: none;
-        }
         .field {
             display: flex;
             flex-direction: column;
@@ -198,18 +236,21 @@
             background: var(--card-bg);
         }
 
-        /* ---- Live Data: chart placeholder (empty/ready state) ---- */
+        /* ---- Live Data: white frame holding an inset empty-plot area ---- */
         .chart {
-            min-height: 320px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--chart-fill);
-            border-radius: 0 0 var(--radius) var(--radius);
+            padding: 16px;
+            background: var(--surface-card);
+            border-radius: 0;
         }
         .chart__empty {
             margin: 0;
-            color: var(--muted);
+            min-height: 288px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface-page);
+            border-radius: var(--radius);
+            color: var(--text-muted);
         }
 
         /* ---- Stream / Record: the hero. The shutter is the DARKEST
@@ -217,15 +258,17 @@
         .capture {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 16px;
+            align-items: center;                          /* centered in the card */
+            gap: 20px;                                    /* button -> segmented spacing */
+            padding: 8px 16px 24px;                       /* +chart's 16px frame = ~24 to button */
+            border-radius: 0 0 var(--radius) var(--radius); /* now the rounded bottom of the card */
         }
         .shutter {
-            width: 96px;
-            height: 96px;
+            width: 64px;
+            height: 64px;
             border: 0;
             border-radius: var(--radius);
-            background: var(--hero);
+            background: var(--placeholder-navy);
             cursor: pointer;
             transition: background 0.15s ease;
         }
@@ -236,19 +279,19 @@
             padding: 3px;
         }
         .segment {
-            padding: 6px 18px;
+            padding: 8px 18px;
             border: none;
             border-radius: 999px;
-            font-size: 13px;
             background: transparent;
             color: var(--muted);
             font: inherit;
+            font-size: 16px;
             cursor: pointer;
             transition: background 0.15s ease;
         }
         .segment.is-selected {
-            background: #ffffff;
-            color: #212529;
+            background: var(--btn-primary);
+            color: #ffffff;
             box-shadow: 0 1px 2px rgba(0,0,0,0.15);
         }
 
@@ -258,7 +301,6 @@
             display: flex;
             align-items: flex-start;
             gap: 16px;
-            border-color: #e9ecef;
         }
         .readout {
             flex: 1;
@@ -269,12 +311,15 @@
             align-items: center;
         }
         .readout dt {
-            color: var(--muted);
+            color: var(--text-muted);
+            font-size: 16px;
         }
         .readout dd {
             margin: 0;
             text-align: right;
-            color: var(--muted);
+            color: var(--text-dark);
+            font-size: 18px;
+            font-weight: 600;
         }
         .bar {
             display: inline-block;
@@ -289,18 +334,18 @@
             display: block;
             height: 100%;
             width: 78%;
-            background: var(--muted);
+            background: var(--btn-primary);
         }
         .refresh {
             flex: none;
-            width: 44px;
-            height: 44px;
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            background: var(--card-bg);
-            color: var(--muted);
+            border: 0;
+            background: none;
+            padding: 0;
+            color: var(--btn-primary);
+            font-size: var(--icon-size);
+            line-height: 1;
             cursor: pointer;
-            transition: background 0.15s ease;
+            transition: color 0.15s ease;
         }
 
         /* ---- Chart group: sensor strip flush above chart ---- */
@@ -314,37 +359,47 @@
            Overrides .card padding + border-radius; keeps .card bg + border */
         .sensor-config {
             display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
+            flex-direction: column;
             padding: 12px 16px;
             border-radius: var(--radius) var(--radius) 0 0;
         }
-        .strip-left {
+
+        /* disclosure bar: full-width, quiet; SPACE (not a border) separates it
+           from the toggle row above. Reuses the light-button hover/active greys. */
+        .disclosure {
             display: flex;
             align-items: center;
-            gap: 8px;
-        }
-        .strip-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-left: auto;
-            flex-shrink: 0;
-        }
-        .advanced-label {
-            font-size: 13px;
-            color: var(--muted);
-            white-space: nowrap;
-        }
-        .advanced-btn {
-            padding: 4px 8px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            background: var(--card-bg);
+            gap: 6px;
+            margin-top: 8px;
+            padding: 12px 0;
+            border: 0;
+            background: transparent;
+            border-radius: var(--radius);
+            color: var(--text-dark);
             font: inherit;
             cursor: pointer;
             transition: background 0.15s ease;
+        }
+        .disclosure__chevron {
+            font-size: var(--icon-size);
+            color: var(--btn-primary);
+        }
+        .disclosure:hover { background: var(--btn-cyan); }
+        .disclosure:active { background: var(--btn-cyan-hover); }
+
+        /* advanced panel: hidden now; Week 5 flips display to flex (no JS yet).
+           gap:32 = category break (params -> gravity), the largest spacing. */
+        .advanced-panel {
+            display: none;
+            flex-direction: column;
+            gap: 32px;
+            padding: 24px 0;
+        }
+        /* the three sampling selects: 24 between adjacent settings */
+        .param-group {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
         }
 
         /* ---- Gravity compensation control ---- */
@@ -359,23 +414,22 @@
 
         /* ---- Hover / active states for all buttons ---- */
         /* Light / outlined buttons: hover darker, active darker still */
-        .channel:hover { background: #f0f0f0; }
-        .channel:active { background: #e0e0e0; }
+        .channel:hover { background: var(--btn-cyan-hover); }
+        .channel:active { background: var(--btn-cyan-hover); }
 
-        .advanced-btn:hover { background: #f0f0f0; }
-        .advanced-btn:active { background: #e0e0e0; }
-
-        .refresh:hover { background: #f0f0f0; }
-        .refresh:active { background: #e0e0e0; }
+        .refresh:hover { color: var(--btn-primary); }
+        .refresh:active { color: var(--btn-primary); }
 
         .segment:hover { background: #f0f0f0; }
         .segment:active { background: #e0e0e0; }
+        .segment.is-selected:hover { background: var(--btn-primary); }
+        .segment.is-selected:active { background: var(--btn-primary); }
 
         /* Dark buttons: hover lighter, press dips with scale */
-        .shutter:hover { background: #2e2e2e; }
+        .shutter:hover { background: var(--placeholder-navy); }
         .shutter:active { transform: scale(0.97); }
 
-        .channel.is-selected:hover { background: #2e2e2e; }
+        .channel.is-selected:hover { background: var(--btn-primary); }
         .channel.is-selected:active { transform: scale(0.97); }
 
     </style>
@@ -402,41 +456,51 @@
 
     <main class="dashboard">
 
-        <!-- 1. CHART GROUP — sensor strip flush above chart, one grid cell -->
+        <!-- 1. OPERATE CELL — section label sits above + outside the card -->
+        <div class="cell">
+        <h2 class="section-label">Call to action</h2>
+
+        <!-- CHART GROUP — sensor strip flush above chart -->
         <div class="chart-group">
 
             <section class="card sensor-config">
-                <div class="strip-left">
-                    <div class="channels">
-                        <button type="button" class="channel">Accel</button>
-                        <button type="button" class="channel is-selected">Gyro</button>
-                        <button type="button" class="channel is-selected">Temp</button>
-                    </div>
+
+                <!-- 1. TOGGLE ROW — always-visible quick controls -->
+                <div class="channels">
+                    <button type="button" class="channel">Accel</button>
+                    <button type="button" class="channel is-selected">Gyro</button>
+                    <button type="button" class="channel is-selected">Temp</button>
                 </div>
-                <div class="strip-right">
-                    <span class="advanced-label">Advanced Settings</span>
-                    <button type="button" class="advanced-btn">v</button>
-                </div>
-                <div class="settings">
-                    <div class="field">
-                        <label for="odr">Sample rate (Hz)</label>
-                        <select id="odr">
-                            <option>12.5</option><option>26</option><option>52</option>
-                            <option selected>104</option><option>208</option><option>416</option>
-                            <option>833</option><option>1666</option><option>3333</option><option>6666</option>
-                        </select>
-                    </div>
-                    <div class="field">
-                        <label for="accel-range">Accel range (g)</label>
-                        <select id="accel-range"><option>2</option><option>4</option><option>8</option><option>16</option></select>
-                    </div>
-                    <div class="field">
-                        <label for="gyro-range">Gyro range (dps)</label>
-                        <select id="gyro-range"><option>125</option><option>250</option><option>500</option><option>1000</option><option>2000</option><option>4000</option></select>
-                    </div>
-                    <div class="field">
-                        <label for="duration">Duration (s)</label>
-                        <input type="number" id="duration" min="0" step="any" value="10">
+
+                <!-- 2. DISCLOSURE BAR — full-width button, bottom element when closed -->
+                <button type="button" class="disclosure" aria-expanded="false" aria-controls="advanced-panel">
+                    <span class="disclosure__label">Advanced settings</span>
+                    <span class="disclosure__chevron">&#9662;</span>
+                </button>
+
+                <!-- 3. ADVANCED PANEL — hidden now; Week 5 flips display + rotates chevron -->
+                <div class="advanced-panel" id="advanced-panel">
+                    <div class="param-group">
+                        <div class="field">
+                            <label for="odr">Sample rate (Hz)</label>
+                            <select id="odr">
+                                <option>12.5</option><option>26</option><option>52</option>
+                                <option selected>104</option><option>208</option><option>416</option>
+                                <option>833</option><option>1666</option><option>3333</option><option>6666</option>
+                            </select>
+                        </div>
+                        <div class="field">
+                            <label for="accel-range">Accel range (g)</label>
+                            <select id="accel-range"><option>2</option><option>4</option><option>8</option><option>16</option></select>
+                        </div>
+                        <div class="field">
+                            <label for="gyro-range">Gyro range (dps)</label>
+                            <select id="gyro-range"><option>125</option><option>250</option><option>500</option><option>1000</option><option>2000</option><option>4000</option></select>
+                        </div>
+                        <div class="field">
+                            <label for="duration">Duration (s)</label>
+                            <input type="number" id="duration" min="0" step="any" value="10">
+                        </div>
                     </div>
                     <label class="field field--inline">
                         <span>Gravity compensation</span>
@@ -453,21 +517,26 @@
                 <div class="chart"><p class="chart__empty">chart goes here</p></div>
             </section>
 
+            <!-- STREAM / RECORD — now folded in as the bottom section of the operate card -->
+            <section class="card capture" aria-labelledby="capture-heading">
+                <h2 id="capture-heading" class="visually-hidden">Stream / Record</h2>
+                <button type="button" class="shutter" aria-label="Start recording"></button>
+                <div class="segmented">
+                    <button type="button" class="segment">Stream</button>
+                    <button type="button" class="segment is-selected">Record</button>
+                </div>
+            </section>
+
+        </div>
         </div>
 
-        <!-- 2. STREAM / RECORD — standalone hero card, direct grid child -->
-        <section class="card capture" aria-labelledby="capture-heading">
-            <h2 id="capture-heading" class="visually-hidden">Stream / Record</h2>
-            <button type="button" class="shutter" aria-label="Start recording"></button>
-            <div class="segmented">
-                <button type="button" class="segment">Stream</button>
-                <button type="button" class="segment is-selected">Record</button>
-            </div>
-        </section>
-
-        <!-- 3. STATUS — single track, the quietest thing on the page -->
+        <!-- 2. STATUS CELL — section label sits above + outside the card -->
+        <div class="cell">
+        <div class="status-header">
+            <h2 id="status-heading" class="section-label">Status</h2>
+            <button type="button" class="refresh" aria-label="Refresh device status">&#8635;</button>
+        </div>
         <section class="card status" aria-labelledby="status-heading">
-            <h2 id="status-heading" class="visually-hidden">Device status</h2>
             <dl class="readout">
                 <dt>Device</dt>      <dd>EVB-01-A3F2</dd>
                 <dt>Firmware</dt>    <dd>v1.4.2</dd>
@@ -475,8 +544,8 @@
                 <dt>Voltage</dt>     <dd>3.96 V</dd>
                 <dt>Temperature</dt> <dd>68&deg;F</dd>
             </dl>
-            <button type="button" class="refresh" aria-label="Refresh device status">&#8635;</button>
         </section>
+        </div>
 
     </main>
 
