@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fetch Practice</title>
+  <style>
+    body { font-family: system-ui; margin: 0; padding: 16px; }
+    .status { display: flex; gap: 16px; margin: 16px 0; }
+    .reading { font-weight: 600; }
+    button { margin-right: 8px; }
+    #log {
+      margin-top: 16px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      background: #f8f9fa;
+      white-space: pre-wrap; /* keep line breaks in the <pre> */
+    }
+  </style>
+</head>
+<body>
+  <h1>Week 3, Lesson 2: Fetch Practice</h1>
+
+  <section class="status">
+    <div>Battery: <span id="battery" class="reading">--</span></div>
+    <div>Temperature: <span id="temperature" class="reading">--</span></div>
+  </section>
+
+  <button id="loadStatusBtn">Load status</button>
+  <button id="saveSettingsBtn">Save settings</button>
+
+  <script src="./script.js"></script>
+</body>
+</html>
