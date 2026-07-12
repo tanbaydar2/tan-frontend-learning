@@ -11,3 +11,4 @@ shutter.addEventListener("click", () => {
 // .value holds the chosen <option> as a string (starts at "104", the selected one).
 const odr = document.querySelector("#odr");
 console.log(odr.value);
+

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EVB-01 Sensor Dashboard</title>
+  <link rel="icon" type="image/png" href="images/favicon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       STATUS BAR  ->  the page header: who this device is + vitals.
+       <header> because it introduces/identifies the whole page.
+       ============================================================ -->
+  <header class="status-bar">
+    <div class="identity">
+      <img class="logo" src="images/favicon.png" alt="Evident Battery logo">
+      <!-- the device name is what this page is "about" -> it's the h1 -->
+      <h1 class="device-name" data-hostname>EVB-01-A3F2</h1>
+    </div>
+    
+
+    <div class="vitals">
+      <!-- battery is a CSS-drawn icon -->
+      <div class="battery" role="img" aria-label="Battery">
+        <span class="battery__fill"></span>
+      </div>
+      <span class="reading" data-temp>68&deg;F</span>
+    </div>
+  </header>
+
+  <!-- main content. Its direct children are the grid items (the cards). -->
+  <main class="dashboard">
+
+    <!-- ============================================================
+         SENSOR CONFIGURATION
+         A real <form>: these inputs are SETTINGS that get sent to the
+         device. (A form is the right container for a group of inputs,
+         even when it's applied via JS instead of a page reload.)
+         ============================================================ -->
+    <section class="sensor-config" aria-labelledby="config-heading">
+      <h2 id="config-heading">Sensor configurations</h2>
+
+      <form class="config-form">
+        <!-- several channels can be on at once -> CHECKBOXES (multi-select).
+             <fieldset> groups related controls; <legend> names the group. -->
+        <fieldset class="data-types">
+          <legend class="visually-hidden">Data type</legend>
+          <label><input type="checkbox" name="channel" value="accel"> Accel</label>
+          <label><input type="checkbox" name="channel" value="gyro"> Gyro</label>
+          <label><input type="checkbox" name="channel" value="temp" checked> Temp</label>
+        </fieldset>
+
+        <!-- advanced settings: native <details> disclosure, no JavaScript -->
+        <details class="advanced">
+          <summary>More settings</summary>
+
+          <label for="duration">Duration (seconds)</label>
+          <input type="number" id="duration" name="duration" min="0" step="any">
+
+          <label for="odr">Sampling rate (Hz)</label>
+          <select id="odr" name="odr">
+            <option value="12.5">12.5</option>
+            <option value="26">26</option>
+            <option value="52">52</option>
+            <option value="104" selected>104</option>
+            <option value="208">208</option>
+            <option value="416">416</option>
+            <option value="833">833</option>
+            <option value="1666">1666</option>
+            <option value="3333">3333</option>
+            <option value="6666">6666</option>
+          </select>
+
+          <label for="accel-range">Accel range (g)</label>
+          <select id="accel-range" name="accel-range">
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="8">8</option>
+            <option value="16">16</option>
+          </select>
+
+          <label for="gyro-range">Gyro range (dps)</label>
+          <select id="gyro-range" name="gyro-range">
+            <option value="125">125</option>
+            <option value="250">250</option>
+            <option value="500">500</option>
+            <option value="1000">1000</option>
+            <option value="2000">2000</option>
+            <option value="4000">4000</option>
+          </select>
+
+          <label class="gravity">
+            <input type="checkbox" id="gravity-comp" name="gravity-comp"> Gravity compensation
+          </label>
+        </details>
+      </form>
+    </section>
+
+    <!-- ============================================================
+         LIVE DATA  ->  the chart mounts in #chart; empty until a
+         recording starts, so it carries a real empty-state message.
+         ============================================================ -->
+    <section class="live-data" aria-labelledby="live-heading">
+      <h2 id="live-heading" class="visually-hidden">Live data</h2>
+      <div class="chart" id="chart">
+        <p class="chart__empty">Live data appears here</p>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DATA COLLECTION  ->  the hero. This is ACTIONS + a mode choice,
+         NOT a form: nothing here is submitted, it triggers behavior.
+         ============================================================ -->
+    <section class="data-collection" aria-labelledby="collect-heading">
+      <h2 id="collect-heading" class="visually-hidden">Data collection</h2>
+
+      <!-- a status that will change (Ready -> Recording) -> live region -->
+      <p class="capture-status" role="status" data-capture-state>Ready</p>
+
+      <!-- pick exactly ONE mode -> RADIOS (single-select for free) -->
+      <div class="mode" role="group" aria-label="Capture mode">
+        <label><input type="radio" name="mode" value="stream"> Stream</label>
+        <label><input type="radio" name="mode" value="record" checked> Record</label>
+      </div>
+
+      <!-- the one primary action. A real <button>, not a styled <div>:
+           it's focusable, keyboard-operable, and a toggle (record/stop). -->
+      <button type="button" class="record-btn" aria-pressed="false">
+        <span class="visually-hidden">Start recording</span>
+      </button>
+    </section>
+
+    <!-- ============================================================
+         DEVICE STATUS  ->  label/value readout -> description list <dl>,
+         the semantic element for term/value pairs. Plus one action.
+         ============================================================ -->
+    <section class="device-status" aria-labelledby="status-heading">
+      <h2 id="status-heading" class="visually-hidden">Device status</h2>
+
+      <dl class="readout">
+        <dt>Device</dt>
+        <dd data-hostname>EVB-01-A3F2</dd>
+
+        <dt>Firmware</dt>
+        <dd data-firmware>v1.4.2</dd>
+
+        <dt>Battery</dt>
+        <!-- <meter> is the semantic element for a scalar value in a range -->
+        <dd><meter min="0" max="100" value="78" data-battery>78%</meter></dd>
+      </dl>
+
+      <button type="button" class="refresh-btn" aria-label="Refresh device status">
+        <span aria-hidden="true">&#8635;</span>
+      </button>
+    </section>
+
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Lesson/reference PDFs stay local (removed from repo on purpose in Week 4)
+*.pdf
+
+# Editor swap files
+*.swp
+
+# Local screenshots
+week-2/.shots/
+week-2/screenshots-task/
+week-2/images/
+
+# Claude context stays local, not on GitHub
+CLAUDE.md
