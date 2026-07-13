@@ -1,0 +1,28 @@
+/* Reused from week-3/lesson-1 index.html: identity LEFT, vitals RIGHT,
+   one row, vertically centered */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  max-width: 1100px;
+  margin: 0 auto 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vitals {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.device-name {
+  font-size: var(--font-size);
+}

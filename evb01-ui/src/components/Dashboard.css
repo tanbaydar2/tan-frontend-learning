@@ -1,0 +1,22 @@
+/* Reused from weeks-1-4/week-3/lesson-1 index.html:
+   auto-fit grid, columns grow 1 -> 2 -> 3 as the viewport widens,
+   no media queries */
+.dashboard {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* shared card frame — separated by background, not a border */
+.card {
+  background: var(--surface-card);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+
+.card__title {
+  margin: 0 0 16px;
+}
