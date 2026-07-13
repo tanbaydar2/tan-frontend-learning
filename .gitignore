@@ -5,9 +5,9 @@
 *.swp
 
 # Local screenshots
-week-2/.shots/
-week-2/screenshots-task/
-week-2/images/
+weeks-1-4/week-2/.shots/
+weeks-1-4/week-2/screenshots-task/
+weeks-1-4/week-2/images/
 
 # Claude context stays local, not on GitHub
 CLAUDE.md
