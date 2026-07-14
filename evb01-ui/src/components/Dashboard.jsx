@@ -4,12 +4,12 @@ import DataCollectionCard from "./DataCollectionCard.jsx";
 import StatusCard from "./StatusCard.jsx";
 import LiveChartCard from "./LiveChartCard.jsx";
 
-function Dashboard() {
+function Dashboard({ status, temperature }) {
   return (
     <main className="dashboard">
       <SensorConfigCard />
       <DataCollectionCard />
-      <StatusCard />
+      <StatusCard status={status} temperature={temperature} />
       <LiveChartCard />
     </main>
   );
